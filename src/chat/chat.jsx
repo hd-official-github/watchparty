@@ -27,7 +27,7 @@ export default function Chat(props) {
 
         try {
             socketRef.current = io.connect("http://localhost:8000");
-            socketRef.current.emit('message', "init")
+            socketRef.current.emit('message', "hello")
             socketRef.current.on("message", (data) => {
                 console.log("D ", data);
             })
