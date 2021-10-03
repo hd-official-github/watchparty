@@ -14,23 +14,26 @@ export default function Chat(props) {
     const [cHat, setcHat] = useState([])
     const [name, setName] = useState("")
     const [room, setRoom] = useState("")
-    let query = useQuery();
-    console.log("Query ", query.get('name'));
-    if (!query.get('name') || !query.get('room')) {
-        props.history.replace('/')
-    } else {
-        setName(query.get('name'))
-        setRoom(query.get('room'))
-    }
-    const socketRef = useRef()
-    useEffect(() => {
 
+    let query = useQuery()
+    const socketRef = useRef()
+
+
+    useEffect(() => {
+        if (!query.get('name') || !query.get('room')) {
+            props.history.replace('/')
+        } else {
+            setName(query.get('name'))
+            setRoom(query.get('room'))
+        }
         try {
             socketRef.current = io.connect("http://localhost:8000");
-            socketRef.current.emit('message', "hello")
+            // socketRef.current.emit('message', "hello")
             socketRef.current.on("message", (data) => {
                 console.log("D ", data);
             })
+
+            socketRef.current.emit('chatMessage', query.get('name'));
         } catch (err) {
             console.log("SOCKET ERR ", err.message);
         }
