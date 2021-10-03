@@ -23,7 +23,7 @@ export default function Login({ history }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("subit", name, " ", selectedRoom);
+    // console.log("subit", name,  selectedRoom);
 
     history.push({
       pathname: "/chat",
@@ -34,7 +34,7 @@ export default function Login({ history }) {
   };
   const handleRoomSelect = (v) => {
     setSelectedRoom(v.target.value);
-    console.log("sleect", v.target.value);
+    // console.log("sleect", v.target.value);
   };
   return (
     <Container component="main" maxWidth="xs">

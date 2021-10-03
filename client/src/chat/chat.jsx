@@ -6,7 +6,8 @@ import { Redirect, useLocation } from "react-router-dom";
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
-
+let socket;
+const ENDPOINT = "http://localhost:8000";
 export default function Chat({ history }) {
   const [cHat, setcHat] = useState([]);
   const [name, setName] = useState("");
@@ -14,33 +15,33 @@ export default function Chat({ history }) {
   const [messages, setMessages] = useState([]);
 
   let query = useQuery();
-  const socketRef = useRef();
+  // const socketRef = useRef();
 
   useEffect(() => {
-    if (!query.get("name") || !query.get("room")) {
+    const [name, room] = [query.get("name"), query.get("room")];
+    if (!name || !room) {
       history.replace("/");
     } else {
-      setName(query.get("name"));
-      setRoom(query.get("room"));
+      setName(name);
+      setRoom(room);
     }
     try {
-      socketRef.current = io.connect("http://localhost:8000");
-      // socketRef.current.emit('message', "hello")
-      socketRef.current.on("message", (data) => {
-        console.log("D ", data);
+      socket = io.connect(ENDPOINT);
+      // socket.emit('message', "hello")
+      socket.on("message", (data) => {
+        // console.log("D ", data);
         addMessage({ id: Math.random().toString(), message: data });
       });
 
-      socketRef.current.emit("chatMessage", query.get("name"));
+      socket.emit("chatMessage", name);
     } catch (err) {
       console.log("SOCKET ERR ", err.message);
     }
-    return () => socketRef.current.disconnect();
+    return () => socket.disconnect();
   }, []);
   const addMessage = (data) => {
-    let temp = [...messages];
-    temp.push(data);
-    setMessages(temp);
+    console.log({ messages });
+    setMessages([...messages, data]);
   };
   return (
     <>
