@@ -24,7 +24,13 @@ export default function Login({ history }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("subit", name, " ", selectedRoom);
-    history.push(`/chat?room=${selectedRoom}&name=${name}`);
+
+    history.push({
+      pathname: "/chat",
+      search:
+        "?" + new URLSearchParams({ room: selectedRoom, name }).toString(),
+      // search: `?room=${encodeURIComponent(selectedRoom)}&name=${encodeURIComponent(name)}`,
+    });
   };
   const handleRoomSelect = (v) => {
     setSelectedRoom(v.target.value);
