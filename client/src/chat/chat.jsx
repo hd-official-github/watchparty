@@ -6,12 +6,14 @@ import { Redirect, useLocation } from "react-router-dom";
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
-let socket;
+let socket,
+  allMessages = [];
 const ENDPOINT = "http://localhost:8000";
 export default function Chat({ history }) {
   const [cHat, setcHat] = useState([]);
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
+
   const [messages, setMessages] = useState([]);
 
   let query = useQuery();
@@ -24,24 +26,26 @@ export default function Chat({ history }) {
     } else {
       setName(name);
       setRoom(room);
-    }
-    try {
+      // try {
       socket = io.connect(ENDPOINT);
       // socket.emit('message', "hello")
-      socket.on("message", (data) => {
-        // console.log("D ", data);
-        addMessage({ id: Math.random().toString(), message: data });
-      });
+      socket.on("message", onMessage);
 
       socket.emit("chatMessage", name);
-    } catch (err) {
-      console.log("SOCKET ERR ", err.message);
+      // } catch (err) {
+      //   console.log("SOCKET ERR ", err.message);
+      // }
     }
     return () => socket.disconnect();
   }, []);
+  const onMessage = (data) => {
+    console.log("D ", data, messages);
+    addMessage({ id: Math.random().toString(), message: data });
+  };
   const addMessage = (data) => {
     console.log({ messages });
-    setMessages([...messages, data]);
+    allMessages.push(data);
+    setMessages(allMessages.slice(-100));
   };
   return (
     <>
