@@ -1,22 +1,13 @@
+import "./App.scss";
 
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import './App.css';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import { createTheme, ThemeProvider } from '@mui/material/styles'
-
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-
-} from "react-router-dom";
-
-import Chat from './chat/chat';
-import Login from './login/login';
+import Chat from "./chat/chat";
+import Login from "./login/login";
 const theme = createTheme();
 function App() {
-
-
   return (
     <ThemeProvider theme={theme}>
       <Router>
