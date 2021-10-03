@@ -72,7 +72,7 @@ export default function Login({ history }) {
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={selectedRoom}
-              label="room"
+              label="Select Room"
               onChange={handleRoomSelect}
             >
               <MenuItem value="room1">Room 1</MenuItem>
@@ -82,6 +82,7 @@ export default function Login({ history }) {
           </FormControl>
 
           <Button
+            disabled={!name || !selectedRoom}
             type="submit"
             fullWidth
             variant="contained"
