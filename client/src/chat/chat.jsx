@@ -26,15 +26,19 @@ export default function Chat({ history }) {
     } else {
       setName(name);
       setRoom(room);
-      // try {
+
+
       socket = io.connect(ENDPOINT);
-      // socket.emit('message', "hello")
+      //join room  on page load
+      socket.emit('joinroom', { name, room });
+
+      //when current user reiceves message
       socket.on("message", onMessage);
 
-      socket.emit("chatMessage", name);
-      // } catch (err) {
-      //   console.log("SOCKET ERR ", err.message);
-      // }
+
+
+
+
     }
     return () => socket.disconnect();
   }, []);
