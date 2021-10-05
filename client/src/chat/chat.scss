@@ -1,10 +1,29 @@
 .chat {
-  .messages {
-    .left {
-      align-self: start;
+  .chatbox {
+    height: 61vh;
+    .messages {
+      height: 100%;
+      .right,
+      .left {
+        align-self: end;
+        color: #fff;
+        padding: 0.3rem 0.7rem;
+        border-radius: 12px;
+        line-height: 100%;
+        margin: 1px;
+      }
+      .left {
+        align-self: start;
+        background-color: #262d31;
+        // background-color: #e5ddd5;
+      }
+      .right {
+        align-self: end;
+        background-color: #066263;
+        // background-color: #dcf8c6;
+      }
     }
-    .right {
-      align-self: end;
+    .input {
     }
   }
 }

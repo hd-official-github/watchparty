@@ -16,14 +16,23 @@ h1 {
   &.col {
     flex-flow: column;
   }
-  &.ai-start {
-    align-items: start;
-  }
 }
 
 .space {
   flex: 1;
 }
+/* ///////////// */
+.mb-1 {
+  margin-bottom: 1rem;
+}
+
+.ai-start {
+  align-items: start;
+}
+.jc-end {
+  justify-content: flex-end;
+}
+
 /* ///////////// */
 .App {
   text-align: center;
