@@ -35,6 +35,17 @@ soc.on("connection", (socket) => {
     socket.emit("message", payload); // might have to remove this & make both emits as one
     socket.broadcast.to(user.room).emit("message", payload);
   });
+  socket.on("videoEvent", (videoEvent) => {
+    console.log("videoEvent", videoEvent);
+    // socket.emit("message", msg);
+    const user = getCurrentUser(socket.id);
+    const payload = {
+      videoEvent,
+      client: { id: user.id, name: user.username },
+    };
+    //socket.emit("message", payload); // might have to remove this & make both emits as one
+    socket.broadcast.to(user.room).emit("videoEvent", payload);
+  });
 
   socket.on("disconnect", () => {
     const user = getCurrentUser(socket.id);

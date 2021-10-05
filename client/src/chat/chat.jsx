@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import { Redirect, useLocation } from "react-router-dom";
 import SendIcon from "@mui/icons-material/Send";
+// import VideoBox from "../components/VideoBox";
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
@@ -15,7 +16,7 @@ export default function Chat({ history }) {
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
   // const input = useRef(null);
-
+  const videoRef = React.useRef(null);
   const [messages, setMessages] = useState([]);
 
   let query = useQuery();
@@ -40,8 +41,22 @@ export default function Chat({ history }) {
         onMessage(payload);
       });
       socket.on("message", onMessage);
+      socket.on("videoEvent", onVideoEvent);
     }
-    return () => socket.disconnect();
+
+    // const events = ["play", "seeked", "pause"];
+    const events = ["play", "pause"];
+    const videoElm = videoRef.current;
+    events.map((e) => {
+      videoElm.addEventListener(e, () => updateEvent(e));
+    });
+
+    return () => {
+      socket.disconnect();
+      events.map((e) => {
+        videoElm.removeEventListener(e, () => updateEvent(e));
+      });
+    };
   }, []);
 
   const onMessage = (data) => {
@@ -72,6 +87,52 @@ export default function Chat({ history }) {
       socket.emit("chatMessage", message);
     }
   };
+  const onVideoEvent = ({ videoEvent, client }) => {
+    console.log({ videoEvent, client });
+    const videoElm = videoRef.current;
+    videoElm.currentTime = videoEvent.currentTime;
+    switch (videoEvent.event) {
+      case "play":
+        videoElm.play();
+        break;
+      case "seeked":
+        // videoElm.currentTime = videoEvent.currentTime;
+        break;
+      case "pause":
+        videoElm.pause();
+        break;
+      default:
+    }
+  };
+  // const hVideoChange = (events) => {
+  //   socket.emit("videoEvent", events);
+  // };
+  const updateEvent = (event) => {
+    const {
+      duration,
+      playing,
+      currentTime,
+      src,
+      currentSrc,
+      muted,
+      paused,
+      volume,
+      // } = ref.current;
+    } = videoRef.current;
+    const eventObject = {
+      event,
+      duration,
+      playing,
+      currentTime,
+      src,
+      currentSrc,
+      muted,
+      paused,
+      volume,
+    };
+    console.log(eventObject);
+    socket.emit("videoEvent", eventObject);
+  };
   return (
     <>
       <main className="chat">
@@ -85,31 +146,43 @@ export default function Chat({ history }) {
             Logout
           </Button>
         </nav>
-        <div className="chatbox">
-          <div className="messages flex col jc-end mb-1">
-            {messages.map((m) => (
-              <span
-                key={m.id}
-                className={m.user?.id == user?.id ? "right" : "left"}
-              >
-                {m.message}
-              </span>
-            ))}
+        <div className="flex jc-stretch">
+          {/* <VideoBox ref={videoRef} onChange={hVideoChange} /> */}
+          <div className="videobox ">
+            <video
+              ref={videoRef}
+              // ref={ref}
+              // {...events}
+              src="https://www.w3schools.com/html/mov_bbb.mp4"
+              controls
+            ></video>
           </div>
-          <form className="input flex" onSubmit={hSendMessage}>
-            <TextField
-              // id="standard-basic"
-              // inputRef={input}
-              fullWidth
-              label="Type Message"
-              variant="standard"
-              name="message"
-            />
-            <Button variant="contained" type="submit">
-              Send&nbsp;
-              <SendIcon fontSize="small" />
-            </Button>
-          </form>
+          <div className="chatbox ">
+            <div className="messages flex col jc-end mb-1">
+              {messages.map((m) => (
+                <span
+                  key={m.id}
+                  className={m.user?.id == user?.id ? "right" : "left"}
+                >
+                  {m.message}
+                </span>
+              ))}
+            </div>
+            <form className="input flex" onSubmit={hSendMessage}>
+              <TextField
+                // id="standard-basic"
+                // inputRef={input}
+                fullWidth
+                label="Type Message"
+                variant="standard"
+                name="message"
+              />
+              <Button variant="contained" type="submit">
+                Send&nbsp;
+                <SendIcon fontSize="small" />
+              </Button>
+            </form>
+          </div>
         </div>
       </main>
     </>

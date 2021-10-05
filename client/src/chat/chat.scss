@@ -1,5 +1,15 @@
 .chat {
+  .videobox {
+    // display: inline-block;
+    width: 50%;
+    > * {
+      height: 100%;
+      width: 100%;
+    }
+  }
   .chatbox {
+    // display: inline-block;
+    width: 50%;
     height: 61vh;
     .messages {
       height: 100%;
