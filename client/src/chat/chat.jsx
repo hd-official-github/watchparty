@@ -40,7 +40,7 @@ export default function Chat({ history }) {
         setUser(payload.client);
         onMessage(payload);
       });
-      socket.on("message", onMessage);
+      socket.on("messagereciever", onMessage);
       socket.on("videoEvent", onVideoEvent);
     }
 
@@ -60,12 +60,12 @@ export default function Chat({ history }) {
   }, []);
 
   const onMessage = (data) => {
-    console.log("D ", data, messages);
+    console.log("MSG RECIEVED ", data, messages);
     addMessage({
       // id: Math.random().toString(),
       id: data.id,
       message: data.message,
-      user: data.client,
+      user: data.client.name,
     });
   };
   const addMessage = (data) => {
@@ -104,9 +104,7 @@ export default function Chat({ history }) {
       default:
     }
   };
-  // const hVideoChange = (events) => {
-  //   socket.emit("videoEvent", events);
-  // };
+
   const updateEvent = (event) => {
     const {
       duration,
@@ -159,9 +157,9 @@ export default function Chat({ history }) {
           </div>
           <div className="chatbox ">
             <div className="messages flex col jc-end mb-1">
-              {messages.map((m) => (
+              {messages.map((m, index) => (
                 <span
-                  key={m.id}
+                  key={index}
                   className={m.user?.id == user?.id ? "right" : "left"}
                 >
                   {m.message}

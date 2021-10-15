@@ -14,14 +14,14 @@ soc.on("connection", (socket) => {
 
     const payload = {
       message: `Welcome to chat ${name}`,
-      client: { id: user.id, name: user.username },
+      client: { id: user.id, name: "CHATBOT" },
     };
-    //socket.emit("message", payload); //welcome current user
+
     socket.emit("welcome", payload); //welcome current user
 
     socket.broadcast
       .to(user.room)
-      .emit("message", { ...payload, message: `${user.username} has joined` }); //broadcast to the room except current user
+      .emit("messagereciever", { ...payload, message: `${user.username} has joined` }); //broadcast to the room except current user
   });
 
   socket.on("chatMessage", (msg) => {
@@ -32,9 +32,12 @@ soc.on("connection", (socket) => {
       message: msg,
       client: { id: user.id, name: user.username },
     };
-    socket.emit("message", payload); // might have to remove this & make both emits as one
-    socket.broadcast.to(user.room).emit("message", payload);
+    socket.emit("messagereciever", payload); // might have to remove this & make both emits as one
+    socket.broadcast.to(user.room).emit("messagereciever", payload);
   });
+
+
+
   socket.on("videoEvent", (videoEvent) => {
     console.log("videoEvent", videoEvent);
     // socket.emit("message", msg);
